@@ -99,8 +99,17 @@ def main():
     # 读取密钥
     try:
         with open(INPUT_FILENAME, 'r') as f_in:
-            keys_to_check = [line.strip() for line in f_in if line.strip()]
-        print(f"Read {len(keys_to_check)} keys from '{INPUT_FILENAME}'.")
+            # Read all non-empty lines
+            raw_keys_to_check = [line.strip() for line in f_in if line.strip()]
+        original_key_count = len(raw_keys_to_check)
+        # Deduplicate while preserving order (Python 3.7+)
+        keys_to_check = list(dict.fromkeys(raw_keys_to_check))
+        deduplicated_key_count = len(keys_to_check)
+        print(f"Read {original_key_count} keys from '{INPUT_FILENAME}'. ", end="")
+        if original_key_count > deduplicated_key_count:
+            print(f"Found {deduplicated_key_count} unique keys after deduplication.")
+        else:
+            print(f"All {deduplicated_key_count} keys are unique.")
     except Exception as e:
         print(f"{COLOR_RED}Error reading input file '{INPUT_FILENAME}': {e}{COLOR_RESET}")
         return
